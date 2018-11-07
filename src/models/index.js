@@ -1,4 +1,2 @@
-import dolphins from './dolphins'
-import sharks from './sharks'
-
-export { dolphins, sharks }
+// eslint-disable-next-line
+export { default as user } from './user'

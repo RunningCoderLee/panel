@@ -28,6 +28,7 @@ const prodRules = Object.assign(baseRules, {
 
 module.exports = {
   root: true,
+  parser: 'babel-eslint',
   env: { 
     browser: true,
     jest: true
@@ -35,3 +36,8 @@ module.exports = {
   extends: 'airbnb',
   rules: isProd ? prodRules : baseRules
 }
+
+// module.exports = {
+//   parser: 'babel-eslint',
+//   extends: 'airbnb'
+// }

@@ -1,18 +1,36 @@
 import React, { Fragment } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
-import ReactHome from '-/pages/react'
-import Antd from '-/pages/antd'
-import Count from '-/pages/count'
-import PageNotFound from '-/pages/pageNotFound'
+import { Route, Switch } from 'react-router-dom'
+import Loadable from 'react-loadable'
+import { AuthorizedRoute } from '-/components/Authorization'
+import history from '-/utils/history'
+
+const UserLayout = Loadable({
+  loader: () => import('-/layouts/user/UserLayout'),
+  loading: () => null,
+})
+
+const BasicLayout = Loadable({
+  loader: () => import('-/layouts/basic/BasicLayout'),
+  loading: () => null,
+})
+
+const redirect = {
+  pathname: '/user/login',
+  state: {
+    from: history.location.pathname,
+  },
+}
 
 const Routes = () => (
   <Fragment>
     <Switch>
-      <Route exact path="/react" component={ReactHome} />
-      <Route exact path="/antd" component={Antd} />
-      <Route exact path="/count" component={Count} />
-      <Redirect exact from="/" to="/react" />
-      <Route component={PageNotFound} />
+      <Route path="/user" component={UserLayout} />
+      <AuthorizedRoute
+        path="/"
+        authority={['admin', 'user']}
+        redirectPath={redirect}
+        component={BasicLayout}
+      />
     </Switch>
   </Fragment>
 )

@@ -1,11 +1,11 @@
 // /* stylelint-disable at-rule-empty-line-before,at-rule-name-space-after,at-rule-no-unknown */
-// @import "../color/colors";
+// @import (reference) "~antd/lib/style/color/colors.less";
 
 // // The prefix to use on all css classes from ant.
 // @ant-prefix             : ant;
 
 // // -------- Colors -----------
-@primary-color          : #faad14;
+@primary-color             : #1890ff;
 // @info-color             : @blue-6;
 // @success-color          : @green-6;
 // @processing-color       : @blue-6;
@@ -37,9 +37,9 @@
 // @font-family  : "Chinese Quote", -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif,
 // "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 // @code-family            : "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
-// @heading-color          : fade(#000, 85%);
-// @text-color             : fade(#000, 65%);
-// @text-color-secondary   : fade(#000, 45%);
+@heading-color          : fade(#000, 85%);
+@text-color             : fade(#000, 65%);
+@text-color-secondary   : fade(#000, 45%);
 // @heading-color-dark     : fade(#fff, 100%);
 // @text-color-dark        : fade(#fff, 85%);
 // @text-color-secondary-dark: fade(#fff, 65%);
@@ -106,7 +106,7 @@
 // @background-color-base  : hsv(0, 0, 96%);  // Default grey background color
 
 // // Disabled states
-// @disabled-color         : fade(#000, 25%);
+@disabled-color         : fade(#000, 25%);
 // @disabled-bg            : @background-color-base;
 // @disabled-color-dark    : fade(#fff, 35%);
 
@@ -172,28 +172,28 @@
 
 // // Media queries breakpoints
 // // Extra small screen / phone
-// @screen-xs              : 480px;
-// @screen-xs-min          : @screen-xs;
+@screen-xs              : 480px;
+@screen-xs-min          : @screen-xs;
 
 // // Small screen / tablet
-// @screen-sm              : 576px;
-// @screen-sm-min          : @screen-sm;
+@screen-sm              : 576px;
+@screen-sm-min          : @screen-sm;
 
 // // Medium screen / desktop
-// @screen-md              : 768px;
-// @screen-md-min          : @screen-md;
+@screen-md              : 768px;
+@screen-md-min          : @screen-md;
 
 // // Large screen / wide desktop
-// @screen-lg              : 992px;
-// @screen-lg-min          : @screen-lg;
+@screen-lg              : 992px;
+@screen-lg-min          : @screen-lg;
 
 // // Extra large screen / full hd
-// @screen-xl              : 1200px;
-// @screen-xl-min          : @screen-xl;
+@screen-xl              : 1200px;
+@screen-xl-min          : @screen-xl;
 
 // // Extra extra large screen / large descktop
-// @screen-xxl              : 1600px;
-// @screen-xxl-min          : @screen-xxl;
+@screen-xxl              : 1600px;
+@screen-xxl-min          : @screen-xxl;
 
 // // provide a maximum
 // @screen-xs-max          : (@screen-sm-min - 1px);
@@ -210,7 +210,7 @@
 // @layout-body-background         : #f0f2f5;
 // @layout-header-background       : #001529;
 // @layout-footer-background       : @layout-body-background;
-// @layout-header-height           : 64px;
+@layout-header-height           : 64px;
 // @layout-header-padding          : 0 50px;
 // @layout-footer-padding          : 24px 50px;
 // @layout-sider-background        : @layout-header-background;
@@ -318,7 +318,7 @@
 // // ---
 // @menu-inline-toplevel-item-height: 40px;
 // @menu-item-height: 40px;
-// @menu-collapsed-width: 80px;
+@menu-collapsed-width: 80px;
 // @menu-bg: @component-background;
 // @menu-item-color: @text-color;
 // @menu-highlight-color: @primary-color;

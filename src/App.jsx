@@ -6,11 +6,15 @@ import { LocaleProvider } from 'antd'
 import zhCN from 'antd/lib/locale-provider/zh_CN'
 import { Router } from 'react-router-dom'
 import history from '-/utils/history'
+import { getAuthority } from '-/utils/authority'
+import { setCurrentAuthority } from '-/components/Authorization'
 import Routes from '-/common/Routes'
 import store from '-/store/index'
 import 'moment/locale/zh-cn'
 
 const persistor = getPersistor()
+
+setCurrentAuthority(getAuthority())
 
 const App = () => (
   <Provider store={store}>

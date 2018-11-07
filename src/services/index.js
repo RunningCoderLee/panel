@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const isProd = process.env.NODE_ENV === 'production'
+
 const service = axios.create({
-  baseURL: '//dp.qa.medlinker.com/api',
+  baseURL: isProd ? '//127.0.0.1:8080' : '//39.98.50.55:3000/mock/12',
   timeout: 50000,
 })
 

@@ -72,11 +72,9 @@ const user = {
     },
     async logout() {
       try {
-        const { data: { errcode } } = await requestLogout()
+        await requestLogout()
 
-        if (errcode === 0) {
-          history.push('/user/login')
-        }
+        history.push('/user/login')
 
         removeToken()
         // setCurrentAuthority('admin')

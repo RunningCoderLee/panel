@@ -9,13 +9,14 @@ class Authorization extends React.PureComponent {
       PropTypes.string,
       PropTypes.func,
       PropTypes.arrayOf(PropTypes.oneOf(['admin', 'user'])),
-    ]).isRequired,
+    ]),
     noMatch: PropTypes.node,
   }
 
   static defaultProps = {
     children: undefined,
     noMatch: null,
+    authority: undefined,
   }
 
   render() {

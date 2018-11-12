@@ -16,9 +16,11 @@ const baseRules = {
   // ensure imports point to files/modules that can be resolved
   // https://github.com/benmosher/eslint-plugin-import/blob/master/docs/rules/no-unresolved.md
   'import/no-unresolved': ['error', { commonjs: true, caseSensitive: true, "ignore": [ '-/' ]}],
+   // disallow use of variables before they are defined
+  'no-use-before-define': ['error', { functions: false, classes: true, variables: true }],
 }
 
-const prodRules = Object.assign(baseRules, {
+const prodRules = Object.assign({}, baseRules, {
   // disallow the use of console (no-console)
   // https://eslint.org/docs/rules/no-console#disallow-the-use-of-console-no-console
   'no-console': ['error', {
@@ -36,8 +38,3 @@ module.exports = {
   extends: 'airbnb',
   rules: isProd ? prodRules : baseRules
 }
-
-// module.exports = {
-//   parser: 'babel-eslint',
-//   extends: 'airbnb'
-// }

@@ -50,5 +50,5 @@ export function getAuthority() {
     return 'admin'
   }
 
-  return ''
+  return 'guest'
 }

@@ -23,20 +23,21 @@ const menuData = [
     name: '商户管理',
     icon: 'shop',
     path: 'merchant',
-    // children: [
-    //   {
-    //     name: '分析页',
-    //     path: 'analysis',
-    //   },
-    //   {
-    //     name: '监控页',
-    //     path: 'monitor',
-    //   },
-    //   {
-    //     name: '工作台',
-    //     path: 'workplace',
-    //   },
-    // ],
+    children: [
+      {
+        name: '商户列表',
+        path: 'list',
+      },
+      {
+        name: '新增商户',
+        path: 'add',
+      },
+      {
+        name: '编辑商户',
+        path: 'edit',
+        authority: 'user',
+      },
+    ],
   },
   // {
   //   name: '表单页',
@@ -130,6 +131,7 @@ const menuData = [
   //   name: '异常页',
   //   icon: 'warning',
   //   path: 'exception',
+  //   hideInMenu: true,
   //   children: [
   //     {
   //       name: '403',
@@ -142,11 +144,6 @@ const menuData = [
   //     {
   //       name: '500',
   //       path: '500',
-  //     },
-  //     {
-  //       name: '触发异常',
-  //       path: 'trigger',
-  //       hideInMenu: true,
   //     },
   //   ],
   // },
@@ -181,8 +178,46 @@ const menuData = [
   //   path: 'test-advanced',
   //   authority: 'admin',
   // },
+  {
+    name: '账户',
+    icon: 'user',
+    path: 'user',
+    authority: 'guest',
+    children: [
+      {
+        name: '登录',
+        path: 'login',
+      },
+    ],
+  },
 ]
 
+/**
+ * 格式化菜单
+ *
+ * [{                                 [{
+ *   name: 'dashboard',                   authority: undefined,
+ *   icon: 'dashboard',                   children: [{
+ *   path: 'dashboard',                     authority: undefined,
+ *   children: [                            name: '分析页',
+ *     {                                    path: '/dashboard/analysis',
+ *       name: '分析页',                   icon: 'dashboard',
+ *       path: 'analysis',    =>          name: 'dashboard',
+ *     },                                 path: '/dashboard',
+ *   ],                               }, {
+ * },                                   authority: undefined,
+ * {                                    icon: 'project',
+ *   name: '项目构建',                   name: 'project',
+ *   icon: 'project',                   path: 'project',
+ *   path: 'project',                 }]
+ * }]
+ *
+ * @export
+ * @param {*} data 菜单原始数组
+ * @param {string} parentPath 分隔符
+ * @param {*} parentAuthority 父级菜单的权限
+ * @returns {array}
+ */
 export function formatter(data, parentPath = '/', parentAuthority) {
   return data.map((item) => {
     let { path } = item
@@ -197,12 +232,27 @@ export function formatter(data, parentPath = '/', parentAuthority) {
       authority: item.authority || parentAuthority,
     }
 
-    if (result.children) {
+    if (item.children) {
       result.children = formatter(result.children, `${result.path}/`, result.authority)
     }
 
     return result
   })
+}
+
+export function getFlatMenuData(menu) {
+  let keys = {}
+
+  menu.forEach((item) => {
+    if (item.children) {
+      keys[item.path] = { ...item }
+      keys = { ...keys, ...getFlatMenuData(item.children) }
+    } else {
+      keys[item.path] = { ...item }
+    }
+  })
+
+  return keys
 }
 
 export default formatter(menuData)

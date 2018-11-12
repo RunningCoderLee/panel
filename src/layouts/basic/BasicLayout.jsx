@@ -10,6 +10,8 @@ import Header from './Header'
 import SiderMenu from './SiderMenu'
 
 import * as styles from './BasicLayout.module.less'
+import { getRoutes } from '-/utils/utils'
+import { AuthorizedRoute, check } from '-/components/Authorization'
 
 const PageNotFound = Loadable({
   loader: () => import('-/pages/pageNotFound'),
@@ -20,15 +22,24 @@ const {
   Content, Footer,
 } = Layout
 
-// const Projects = Loadable({
-//   loader: () => import('-/pages/projects/Projects'),
-//   loading: () => null,
-// })
-
-// const ProjectDetail = Loadable({
-//   loader: () => import('-/pages/projectDetail/ProjectDetail'),
-//   loading: () => null,
-// })
+/**
+ * 根据菜单取得重定向地址.
+ */
+const redirectData = []
+const getRedirect = (item) => {
+  if (item && item.children) {
+    if (item.children[0] && item.children[0].path) {
+      redirectData.push({
+        from: `${item.path}`,
+        to: `${item.children[0].path}`,
+      })
+      item.children.forEach((children) => {
+        getRedirect(children)
+      })
+    }
+  }
+}
+menuData.forEach(getRedirect)
 
 const mapState = state => ({
   currentUser: state.user.currentUser,
@@ -45,6 +56,14 @@ class BasicLayout extends React.PureComponent {
     getUserInfo: PropTypes.func,
     logout: PropTypes.func,
     currentUser: PropTypes.shape({}),
+    match: PropTypes.shape({
+      params: PropTypes.shape({}),
+      isExact: PropTypes.bool,
+      path: PropTypes.string,
+      url: PropTypes.string,
+    }).isRequired,
+    location: PropTypes.shape({}).isRequired,
+    routerData: PropTypes.shape({}).isRequired,
   }
 
   static defaultProps = {
@@ -65,13 +84,35 @@ class BasicLayout extends React.PureComponent {
     getUserInfo()
   }
 
+  getBaseRedirect = () => {
+    const { location: { state }, routerData } = this.props
+
+    const redirect = state && state.from
+
+    if (redirect) {
+      state.from = '' // TODO: 重点测试
+    } else {
+      const authorizedPath = Object.keys(routerData).find(
+        item => check(routerData[item].authority, item) && (item !== '/'),
+      )
+
+      return authorizedPath
+    }
+
+    return redirect
+  }
+
   handleCollapse = () => {
     this.setState(prevState => ({ collapsed: !prevState.collapsed }))
   }
 
   render() {
     const { collapsed } = this.state
-    const { currentUser, logout } = this.props
+    const {
+      currentUser, logout, match, routerData,
+    } = this.props
+
+    const baseRedirect = this.getBaseRedirect()
 
     const mainStyle = { paddingLeft: collapsed ? 80 : 256 }
 
@@ -92,9 +133,20 @@ class BasicLayout extends React.PureComponent {
           />
           <Content className={styles.content}>
             <Switch>
-              {/* <Route path="/project/detail/:id" component={ProjectDetail} />
-              <Route path="/project" component={Projects} /> */}
-              <Redirect exact from="/" to="/brand-management" />
+              {redirectData.map(item => (
+                <Redirect key={item.from} exact from={item.from} to={item.to} />
+              ))}
+              { getRoutes(match.path, routerData).map(item => (
+                <AuthorizedRoute
+                  key={item.key}
+                  path={item.path}
+                  component={item.component}
+                  exact={item.exact}
+                  authority={item.authority}
+                  redirectPath="/exception/403"
+                />
+              ))}
+              <Redirect exact from="/" to={baseRedirect} />
               <Route component={PageNotFound} />
             </Switch>
           </Content>

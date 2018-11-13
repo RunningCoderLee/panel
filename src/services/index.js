@@ -1,4 +1,7 @@
 import axios from 'axios'
+import AxiosWrapper from './utils/axiosWrapper'
+
+export { default as errorHandler } from './utils/errorHandler'
 
 const isProd = process.env.NODE_ENV === 'production'
 
@@ -13,4 +16,4 @@ service.interceptors.request.use(config => config, error => Promise.reject(error
 // Add a response interceptor
 service.interceptors.response.use(response => response, error => Promise.reject(error))
 
-export default service
+export default new AxiosWrapper(service)

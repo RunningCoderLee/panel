@@ -2,6 +2,7 @@ import { setCurrentAuthority } from '-/components/Authorization'
 import {
   requestLogin, requestGetUserInfo, requestLogout,
 } from '-/services/user'
+import { errorHandler } from '-/services'
 import history from '-/utils/history'
 import { setToken, removeToken } from '-/utils/authority'
 
@@ -42,32 +43,27 @@ const user = {
   effects: dispatch => ({
     async getUserInfo(id) {
       try {
-        const { data: { data } } = await requestGetUserInfo(id)
+        const { data } = await requestGetUserInfo(id)
 
         dispatch.user.updateCurrentUser(data)
-
-        return Promise.resolve()
       } catch (err) {
-        return Promise.reject(err)
+        errorHandler(err)
       }
     },
     async login(payload) {
       try {
-        const { data: { code, data, message } } = await requestLogin(payload)
+        const { data } = await requestLogin(payload)
 
-        if (code !== 0) {
-          dispatch.user.loginFailure(message)
-          return Promise.reject(message)
-        }
 
         setToken(data.token)
 
-        // TODO: 后续添加权限后再调整
         setCurrentAuthority('admin')
-
-        return Promise.resolve()
       } catch (err) {
-        return Promise.reject(err)
+        errorHandler(err, {
+          business: (code, message) => {
+            dispatch.user.loginFailure(message)
+          },
+        })
       }
     },
     async logout() {
@@ -78,10 +74,8 @@ const user = {
 
         removeToken()
         // setCurrentAuthority('admin')
-
-        return Promise.resolve()
       } catch (err) {
-        return Promise.reject(err)
+        errorHandler(err)
       }
     },
   }),

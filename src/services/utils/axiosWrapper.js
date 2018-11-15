@@ -24,24 +24,24 @@ class Wrapper {
         .then((res) => {
           const { data, status } = res
 
-          if (status > 200) {
-            reject(new NetError(status))
+          if (status > 300) {
+            return reject(new NetError(status))
           }
 
           if (data.code > 0) {
-            reject(new BusinessError(data.code, data.message))
+            return reject(new BusinessError(data.code, data.message))
           }
 
-          resolve(data, res)
+          return resolve(data, res)
         })
         .catch((error) => {
           if (axios.isCancel(error)) {
-            reject(new CancelError('Request canceled'))
+            return reject(new CancelError('Request canceled'))
           }
 
           const status = Number(error.code) || 0
 
-          reject(new NetError(status))
+          return reject(new NetError(status))
         })
     }, cancelTokenSource)
   }

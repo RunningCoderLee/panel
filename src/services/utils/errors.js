@@ -13,7 +13,7 @@ export class BusinessError extends Error {
     this.code = code
   }
 
-  defaultHandler() {
+  defaultHandler = () => {
     Message.error(this.message)
   }
 }
@@ -30,7 +30,7 @@ export class NetError extends Error {
     this.code = code
   }
 
-  defaultHandler() {
+  defaultHandler = () => {
     let content = ''
     switch (this.code) {
       case 400:
@@ -58,7 +58,7 @@ export class CancelError extends Error {
   }
 
   // eslint-disable-next-line
-  defaultHandler() {
+  defaultHandler = () => {
     console.error('Request canceled')
   }
 }

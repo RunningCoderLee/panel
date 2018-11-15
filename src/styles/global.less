@@ -1,3 +1,5 @@
+@import './ant-theme-vars.less';
+
 body {
   margin: 0;
   padding: 0;
@@ -30,4 +32,25 @@ code {
 .global-spin {
   width: 100%;
   margin: 40px 0 !important;
+}
+
+.btn-link {
+  color: @primary-color;
+  appearance: none;
+  outline: 0;
+  border: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  padding: 0;
+  margin: 0;
+  display: inline-block;
+  background: transparent;
+
+  &:active {
+    color: @primary-7;
+  }
+
+  &:hover {
+    color: @primary-5;
+  }
 }

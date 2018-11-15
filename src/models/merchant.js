@@ -82,6 +82,9 @@ const merchant = {
         list: newList,
       }
     },
+    resetState() {
+      return initState
+    },
   },
   effects: () => ({
     async getList(payload, rootState) {

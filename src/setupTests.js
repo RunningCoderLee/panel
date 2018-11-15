@@ -8,4 +8,4 @@ import Adapter from 'enzyme-adapter-react-16'
 //   return 0
 // }
 
- configure({ adapter: new Adapter()}) 
+configure({ adapter: new Adapter() })

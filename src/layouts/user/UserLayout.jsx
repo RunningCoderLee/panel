@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { Redirect, Route, Switch } from 'react-router-dom'
-import * as Loadable from 'react-loadable'
+import Loadable from 'react-loadable'
 import Header from './Header'
 import Footer from './Footer'
 

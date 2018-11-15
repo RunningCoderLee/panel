@@ -7,7 +7,7 @@ const initState = {
   list: [],
   current: null,
   keywords: '',
-  orderBy: 'DESC',
+  orderBy: 'descend',
   pagination: {
     total: 0,
     pageSize: 10,
@@ -23,13 +23,11 @@ const merchant = {
     getListSuccess(state, payload) {
       return {
         ...state,
-        orderBy: payload.orderBy,
         list: payload.list,
+        orderBy: payload.sortOrder,
         pagination: {
           ...state.pagination,
           total: payload.total,
-          pageSize: payload.pageSize,
-          current: payload.pageNum,
         },
       }
     },
@@ -45,14 +43,15 @@ const merchant = {
         keywords: payload,
       }
     },
-    changeTable(state, pagination) {
+    changeTable(state, payload) {
       return {
         ...state,
+        orderBy: payload.sorter.order,
+        total: payload.pagination.total,
         pagination: {
           ...state.pagination,
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
+          current: payload.pagination.current,
+          pageSize: payload.pagination.pageSize,
         },
       }
     },

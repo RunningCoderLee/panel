@@ -8,9 +8,8 @@ import ToolBar from './ToolBar'
 import * as styles from './list.module.less'
 
 const mapState = state => ({
-  list: state.shop.list,
-  keywords: state.shop.keywords,
-  total: state.shop.total,
+  ...state.shop,
+  switching: state.loading.effects.shop.switchStatus,
 })
 
 const mapDispatch = dispatch => dispatch.shop
@@ -22,41 +21,57 @@ class List extends Component {
     list: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     total: PropTypes.oneOfType([PropTypes.number]),
     changeKeywords: PropTypes.func.isRequired,
+    switchStatus: PropTypes.func.isRequired,
+    switching: PropTypes.bool,
+    resetState: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
     total: null,
+    switching: false,
   }
 
   columns = [{
     title: '店铺名称',
     dataIndex: 'name',
+    width: 100,
   }, {
     title: '店铺地址',
     dataIndex: 'addr',
+    width: 180,
   }, {
     title: '店铺电话',
     dataIndex: 'tel',
+    width: 80,
   }, {
     title: '店长',
     dataIndex: 'manager',
+    width: 60,
   }, {
     title: '店员',
     dataIndex: 'employees',
+    width: 200,
     render: text => this.renderEmployees(text),
   }, {
     title: '是否启用',
     dataIndex: 'status',
-    render: (text, record) => (
-      <Switch
-        onChange={this.handleChangeStatus(record.id)}
-        checkedChildren="营业"
-        unCheckedChildren="停业"
-        checked={!!text}
-      />
-    ),
+    width: 80,
+    render: (text, record) => {
+      const { switching } = this.props
+      const { currentSwitchId } = this.state
+      return (
+        <Switch
+          onChange={this.handleChangeStatus(record.id)}
+          checkedChildren="营业"
+          unCheckedChildren="停业"
+          checked={!!text}
+          loading={switching && currentSwitchId === record.id}
+        />
+      )
+    },
   }, {
     title: '操作',
+    width: 80,
     dataIndex: 'operator',
     render: () => (
       <>
@@ -68,7 +83,9 @@ class List extends Component {
 
   constructor(props) {
     super(props)
-    this.input = React.createRef()
+    this.state = {
+      currentSwitchId: null,
+    }
   }
 
   componentDidMount() {
@@ -86,9 +103,21 @@ class List extends Component {
     }
   }
 
-  handleChangeStatus = id => (value) => {
-    console.log(id)
-    console.log(value)
+  componentWillUnmount() {
+    const { resetState } = this.props
+
+    resetState()
+  }
+
+  handleChangeStatus = id => (checked) => {
+    const { switchStatus } = this.props
+    switchStatus({
+      id,
+      status: checked,
+    })
+    this.setState({
+      currentSwitchId: id,
+    })
   }
 
   handleSearch = (keywords) => {

@@ -17,8 +17,20 @@ class ToolBar extends Component {
     keywords: '',
   }
 
-  state = {
-    value: this.props.keywords, // eslint-disable-line
+  constructor(props) {
+    super(props)
+    this.state = {
+      value: props.keywords,
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { value } = this.state
+    if (nextProps.keywords !== value) {
+      this.setState({
+        value: nextProps.keywords,
+      })
+    }
   }
 
   handleChange = (e) => {

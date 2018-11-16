@@ -9,6 +9,8 @@ const initState = {
   total: null,
 }
 
+const asyncDelay = ms => new Promise(r => setTimeout(r, ms))
+
 const shop = {
   state: initState,
   reducers: {
@@ -37,6 +39,21 @@ const shop = {
         ...initState,
       }
     },
+    updateStatus(state, payload) {
+      const newList = state.list.map((item) => {
+        let temp = item
+        if (temp.id === payload.id) {
+          temp = payload
+        }
+
+        return temp
+      })
+
+      return {
+        ...state,
+        list: newList,
+      }
+    },
   },
   effects: () => ({
     async getList(payload, rootState) {
@@ -56,6 +73,16 @@ const shop = {
         errorHandler(err)
         this.getListFailure()
       }
+    },
+    async switchStatus(payload, rootState) {
+      await asyncDelay(3000)
+      const target = rootState.shop.list.find(item => item.id === payload.id)
+
+      const result = {
+        ...target,
+        status: payload.status ? 1 : 0,
+      }
+      this.updateStatus(result)
     },
   }),
 }

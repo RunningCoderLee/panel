@@ -45,6 +45,12 @@ const routerConfig = {
   '/user/login': {
     component: dynamicWrapper(() => import('-/pages/login/Login')),
   },
+  '/shop/list': {
+    component: dynamicWrapper(() => import('-/pages/shop/list')),
+  },
+  '/shop/add': {
+    component: dynamicWrapper(() => import('-/pages/shop/add')),
+  },
 }
 
 function findMenuKey(menuData, path) {

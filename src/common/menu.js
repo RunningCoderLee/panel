@@ -39,26 +39,21 @@ const menuData = [
       },
     ],
   },
-  // {
-  //   name: '表单页',
-  //   icon: 'form',
-  //   path: 'form',
-  //   children: [
-  //     {
-  //       name: '基础表单',
-  //       path: 'basic-form',
-  //     },
-  //     {
-  //       name: '分步表单',
-  //       path: 'step-form',
-  //     },
-  //     {
-  //       name: '高级表单',
-  //       authority: 'admin',
-  //       path: 'advanced-form',
-  //     },
-  //   ],
-  // },
+  {
+    name: '门店管理',
+    icon: 'form',
+    path: 'shop',
+    children: [
+      {
+        name: '新增门店',
+        path: 'add',
+      },
+      {
+        name: '门店查询',
+        path: 'list',
+      },
+    ],
+  },
   // {
   //   name: '列表页',
   //   icon: 'table',

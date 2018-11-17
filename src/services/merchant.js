@@ -1,9 +1,9 @@
-import qs from 'qs'
+// import qs from 'qs'
 import service from './index'
 
 // 新增商户
 // http://39.98.50.55:3000/project/12/interface/api/34
-export const requestAddMerchant = payload => service.post('/login', qs.stringify(payload))
+export const requestAddMerchant = payload => service.post('/login', payload)
 
 // 删除商户
 // http://yapi.int.medlinker.com/project/63/interface/api/512

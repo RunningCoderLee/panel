@@ -1,6 +1,7 @@
 import {
-  requestGetMerchantList,
+  requestGetMerchantList, requestAddMerchant,
 } from '-/services/merchant'
+import { message } from 'antd'
 import { errorHandler } from '-/services'
 
 const initState = {
@@ -110,9 +111,13 @@ const merchant = {
     },
     async addMerchant(payload) {
       try {
-        console.log(payload)
+        const { data } = await requestAddMerchant(payload)
+
+        console.log(data)
+
+        message.success('新增成功！')
       } catch (err) {
-        console.log(err)
+        errorHandler(err)
       }
     },
     async modifyMerchant() {

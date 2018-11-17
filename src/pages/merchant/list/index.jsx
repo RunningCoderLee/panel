@@ -16,7 +16,7 @@ const mapState = state => ({
 
 const mapDispatch = dispatch => dispatch.merchant
 
-class MerchantList extends React.Component {
+class MerchantList extends React.PureComponent {
   static propTypes = {
     switching: PropTypes.bool,
     keywords: PropTypes.string,

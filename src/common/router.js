@@ -51,6 +51,9 @@ const routerConfig = {
   '/shop/add': {
     component: dynamicWrapper(() => import('-/pages/shop/add')),
   },
+  '/shop/edit': {
+    component: dynamicWrapper(() => import('-/pages/shop/edit')),
+  },
 }
 
 function findMenuKey(menuData, path) {

@@ -5,9 +5,9 @@ import {
   Form, Input, Select, Radio, Button, Icon, message,
 } from 'antd'
 
-import Upload from './Upload'
+import Upload from '../add/Upload'
 
-import * as styles from './add.module.less'
+import * as styles from './edit.module.less'
 
 const FormItem = Form.Item
 
@@ -22,7 +22,7 @@ const mapDispatch = dispatch => ({
 
 const INITIAL_PASSWORD = '8888888'
 
-class Add extends Component {
+class Edit extends Component {
   static propTypes = {
     form: PropTypes.shape({
       getFieldDecorator: PropTypes.func.isRequired,
@@ -33,13 +33,20 @@ class Add extends Component {
     storeTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     roleTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     payTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    postShop: PropTypes.func.isRequired,
+    putShop: PropTypes.func.isRequired,
     validateEmloyeeAccount: PropTypes.func.isRequired,
+    getShop: PropTypes.func.isRequired,
   }
 
   constructor(props) {
     super(props)
     this.state = {
+      store: {
+        name: '',
+        tel: '',
+        storeType: '',
+        addr: '',
+      },
       employeeList: [{
         account: {
           value: '',
@@ -59,12 +66,27 @@ class Add extends Component {
   }
 
   componentDidMount() {
-    const { getDictionaryList } = this.props
+    const { getDictionaryList, getShop } = this.props
     Promise.all([
       getDictionaryList('STORE'),
       getDictionaryList('ROLE'),
       getDictionaryList('PAY'),
     ])
+    getShop()
+      .then((data) => {
+        console.log(data)
+        const {
+          name, tel, storeType, addr, employees, pays,
+        } = data
+        const store = {
+          name, tel, storeType, addr,
+        }
+        this.setState({
+          store,
+          employeeList: employees,
+          payWayList: pays,
+        })
+      })
   }
 
   handleAddPayWay = () => {
@@ -190,7 +212,7 @@ class Add extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, postShop } = this.props
+    const { form, putShop } = this.props
     const { validateFields } = form
     validateFields((err, values) => {
       if (!err) {
@@ -204,14 +226,14 @@ class Add extends Component {
           employees: employeeList,
           pays: payWayList,
         }
-        postShop(params)
-          .then(() => message.success('新增成功'))
+        putShop(params)
+          .then(() => message.success('修改成功'))
       }
     })
   }
 
   render() {
-    const { employeeList, payWayList } = this.state
+    const { employeeList, payWayList, store } = this.state
     const {
       form, storeTypeList, roleTypeList, payTypeList,
     } = this.props
@@ -219,11 +241,12 @@ class Add extends Component {
     return (
       <Form className={styles['store-form']} onSubmit={this.handleSubmit}>
         <div className={styles['store-container']}>
-          <h3>新增门店</h3>
+          <h3>门店修改</h3>
           <div className={styles['store-form-row']}>
             <FormItem label="门店名称" className={styles['store-name']}>
               {getFieldDecorator('name', {
                 rules: [{ required: true, message: '请输入门店名称' }],
+                initialValue: store.name,
               })(
                 <Input placeholder="请输入门店名称" />,
               )}
@@ -231,6 +254,7 @@ class Add extends Component {
             <FormItem label="电话" className={styles['store-telephone']}>
               {getFieldDecorator('tel', {
                 rules: [{ required: true, message: '请输入电话' }],
+                initialValue: store.tel,
               })(
                 <Input placeholder="请输入电话" />,
               )}
@@ -240,15 +264,16 @@ class Add extends Component {
                 rules: [{
                   required: true, message: '请选择门店类型',
                 }],
+                initialValue: store.storeType,
               })(
                 <Select placeholder="选择门店类型">
                   {
-                    storeTypeList.map(store => (
+                    storeTypeList.map(type => (
                       <Select.Option
-                        key={store.code}
-                        value={store.code}
+                        key={type.code}
+                        value={type.code}
                       >
-                        {store.name}
+                        {type.name}
                       </Select.Option>
                     ))
                   }
@@ -263,6 +288,7 @@ class Add extends Component {
               }, {
                 max: 45, message: '最多为45个字符',
               }],
+              initialValue: store.addr,
             })(
               <Input placeholder="请输入门店地址" />,
             )}
@@ -282,6 +308,7 @@ class Add extends Component {
                       rules: [{
                         required: true, message: '请选择门店支付方式',
                       }],
+                      initialValue: payWay.payName,
                     })(
                       <Select onChange={this.handleChangePayWay(index)} style={{ width: 120 }} placeholder="请选择支付">
                         {
@@ -337,6 +364,7 @@ class Add extends Component {
                   >
                     {getFieldDecorator(`account${index}`, {
                       rules: [{ required: true, message: '请输入登录账号' }],
+                      initialValue: employee.account,
                     })(
                       <Input
                         placeholder="建议输入手机号"
@@ -348,7 +376,7 @@ class Add extends Component {
                   <FormItem label="初始密码" className={styles['employee-form-item']}>
                     {getFieldDecorator(`password${index}`, {
                       rules: [{ required: true, message: '请输入初始密码' }],
-                      initialValue: '88888888',
+                      initialValue: employee.password,
                     })(
                       <Input
                         placeholder="请输入初始密码"
@@ -361,6 +389,7 @@ class Add extends Component {
                   <FormItem label="姓名" className={styles['employee-form-item']}>
                     {getFieldDecorator(`emloyeeName${index}`, {
                       rules: [{ required: true, message: '请输入姓名' }],
+                      initialValue: employee.name,
                     })(
                       <Input
                         placeholder="输入真实姓名"
@@ -371,6 +400,7 @@ class Add extends Component {
                   <FormItem label="性别" className={styles['employee-form-item']}>
                     {getFieldDecorator(`sex${index}`, {
                       rules: [{ required: true, message: '请选择性别' }],
+                      initialValue: employee.sex,
                     })(
                       <Radio.Group onChange={this.handleChangeEmloyeeValue(index, 'sex')}>
                         <Radio value={1}>男</Radio>
@@ -382,6 +412,7 @@ class Add extends Component {
                 <FormItem label="门店职位">
                   {getFieldDecorator(`roleId${index}`, {
                     rules: [{ required: true, message: '请选择门店职位' }],
+                    initialValue: employee.roleId,
                   })(
                     <Radio.Group onChange={this.handleChangeEmloyeeValue(index, 'roleId')}>
                       {roleTypeList.map(item => (
@@ -401,7 +432,7 @@ class Add extends Component {
             ))
           }
           <div className={styles['submit-btn-container']}>
-            <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit}>保存并提交</Button>
+            <Button type="primary" htmlType="submit" size="large" onClick={this.handleSubmit}>修改并提交</Button>
           </div>
         </div>
       </Form>
@@ -409,4 +440,4 @@ class Add extends Component {
   }
 }
 
-export default connect(mapState, mapDispatch)(Form.create()(Add))
+export default connect(mapState, mapDispatch)(Form.create()(Edit))

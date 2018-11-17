@@ -104,6 +104,34 @@ const shop = {
       await asyncDelay(3000)
       return Promise.resolve(false)
     },
+    async getShop() {
+      const mockData = {
+        name: 'name',
+        tel: '12324',
+        storeType: 'mainStore',
+        addr: 'xxxxx',
+        employees: [{
+          account: '11',
+          password: '12324',
+          name: '张三',
+          sex: 1,
+          roleId: 'admin',
+        }],
+        pays: [{
+          payName: '网银支付',
+          payUrl: '',
+        }],
+      }
+
+      return Promise.resolve(mockData)
+    },
+    async putShop(payload) {
+      try {
+        await requestPostShop(payload)
+      } catch (error) {
+        errorHandler(error)
+      }
+    },
   }),
 }
 

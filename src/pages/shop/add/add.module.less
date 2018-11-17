@@ -1,0 +1,127 @@
+.store-container,
+.employee-container {
+  background: #fff;
+  padding: 16px;
+
+  :global(.ant-form-item) {
+    display: flex;
+  }
+
+  :global(.ant-form-item-label) {
+    width: 100px;
+    text-align: right;
+  }
+
+  :global(.ant-form-item-control-wrapper) {
+    width: calc(100% - 100px);
+  }
+}
+
+.store-form-row {
+  display: flex;
+}
+
+.store-name {
+  width: 40%;
+}
+
+.store-telephone {
+  width: 30%;
+}
+
+.store-type {
+  width: 30%;
+}
+
+.store-pay-way-row {
+  clear: both;
+}
+
+.store-pay-way-label {
+  width: 100px;
+  text-align: right;
+  display: inline-block;
+  color: rgba(0, 0, 0, 0.85);
+  vertical-align: top;
+  position: relative;
+  top: 4px;
+
+  &::before {
+    display: inline-block;
+    margin-right: 4px;
+    content: "*";
+    line-height: 1;
+    font-size: 14px;
+    color: #f5222d;
+  }
+
+  &::after {
+    content: ":";
+    margin: 0 8px 0 2px;
+    position: relative;
+    top: -0.5px;
+  }
+}
+
+.store-pay-way-container {
+  width: calc(100% - 100px);
+  display: inline-block;
+
+  :global(.ant-form-item-control-wrapper) {
+    width: 100%;
+  }
+
+  :global(.ant-form-item) {
+    display: inline-block;
+  }
+}
+
+.store-pay-way-item {
+  width: 140px;
+  position: relative;
+}
+
+.store-pay-way-add-icon {
+  position: relative;
+  top: 4px;
+}
+
+.store-pay-way-remove-icon {
+  position: absolute;
+  right: -1px;
+  font-size: 18px;
+  top: -16px;
+  cursor: pointer;
+}
+
+.employee-container {
+  margin-top: 20px;
+}
+
+.employee-item {
+  border-bottom: 1px solid #cecece;
+  margin-bottom: 16px;
+}
+
+.emloyee-form-row {
+  display: flex;
+}
+
+.employee-form-item {
+  width: 50%;
+}
+
+.employee-delete-icon {
+  margin-left: 12px;
+  color: red;
+  cursor: pointer;
+}
+
+.add-employee-btn-container {
+  margin-bottom: 16px;
+}
+
+.submit-btn-container {
+  text-align: center;
+  margin-top: 20px;
+}

@@ -1,5 +1,6 @@
 import {
   requestGetShopList,
+  requestPostShop,
 } from '-/services/shop'
 import { errorHandler } from '-/services'
 
@@ -83,6 +84,17 @@ const shop = {
         status: payload.status ? 1 : 0,
       }
       this.updateStatus(result)
+    },
+    async postShop(payload) {
+      try {
+        await requestPostShop(payload)
+      } catch (error) {
+        errorHandler(error)
+      }
+    },
+    async validateEmloyeeAccount() {
+      await asyncDelay(3000)
+      return Promise.resolve(false)
     },
   }),
 }

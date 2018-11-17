@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import _ from 'lodash'
-import { Table, Switch } from 'antd'
+import { Table, Switch, message } from 'antd'
 import ToolBar from './ToolBar'
 
 import * as styles from './list.module.less'
@@ -24,6 +24,7 @@ class List extends Component {
     switchStatus: PropTypes.func.isRequired,
     switching: PropTypes.bool,
     resetState: PropTypes.func.isRequired,
+    deleteShop: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -73,10 +74,11 @@ class List extends Component {
     title: '操作',
     width: 80,
     dataIndex: 'operator',
-    render: () => (
+    render: (text, record) => (
       <>
-        <span>修改</span>
-        <span>删除</span>
+        <span className={styles['edit-btn']}>修改</span>
+        {/* eslint-disable-next-line */}
+        <span className={styles['delete-btn']} onClick={this.handleDelete(record.id)}>删除</span>
       </>
     ),
   }]
@@ -123,6 +125,13 @@ class List extends Component {
   handleSearch = (keywords) => {
     const { changeKeywords } = this.props
     changeKeywords(keywords)
+  }
+
+  handleDelete = id => () => {
+    const { deleteShop } = this.props
+
+    deleteShop(id)
+      .then(() => message.success('删除成功'))
   }
 
   renderEmployees = (value) => {

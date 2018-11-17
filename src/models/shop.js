@@ -85,6 +85,14 @@ const shop = {
       }
       this.updateStatus(result)
     },
+    async deleteShop(payload, rootState) {
+      const list = [...rootState.shop.list]
+      const targetIndex = list.findIndex(item => item.id === payload)
+      list.splice(targetIndex, 1)
+      const result = { list, total: list.length }
+
+      this.getListSuccess(result)
+    },
     async postShop(payload) {
       try {
         await requestPostShop(payload)

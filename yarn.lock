@@ -2179,6 +2179,10 @@ cheerio@^1.0.0-rc.2:
     lodash "^4.15.0"
     parse5 "^3.0.1"
 
+china-division@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/china-division/-/china-division-2.1.1.tgz#a7326d45cd01fbf0c8714e0bbb3502349694ea16"
+
 chokidar@^2.0.0, chokidar@^2.0.2, chokidar@^2.0.4:
   version "2.0.4"
   resolved "https://registry.npmjs.org/chokidar/-/chokidar-2.0.4.tgz#356ff4e2b0e8e43e322d18a372460bbcf3accd26"

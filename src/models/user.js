@@ -7,9 +7,7 @@ import history from '-/utils/history'
 import { setToken, removeToken } from '-/utils/authority'
 
 const initState = {
-  currentUser: {
-    username: '',
-  },
+  currentUser: {},
   authority: '',
   isLoginFailed: false,
   errorMessage: '',
@@ -41,9 +39,9 @@ const user = {
     },
   },
   effects: dispatch => ({
-    async getUserInfo(id) {
+    async getUserInfo() {
       try {
-        const { data } = await requestGetUserInfo(id)
+        const { data } = await requestGetUserInfo()
 
         dispatch.user.updateCurrentUser(data)
       } catch (err) {

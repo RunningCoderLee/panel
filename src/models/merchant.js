@@ -1,13 +1,15 @@
 import {
-  requestGetMerchantList,
+  requestGetMerchantList, requestAddMerchant,
+  requestDeleteMerchant, requestGetMerchantDetail,
 } from '-/services/merchant'
+import { message } from 'antd'
 import { errorHandler } from '-/services'
 
 const initState = {
   list: [],
-  current: null,
+  current: {},
   keywords: '',
-  orderBy: 'DESC',
+  orderBy: 'descend',
   pagination: {
     total: 0,
     pageSize: 10,
@@ -23,13 +25,11 @@ const merchant = {
     getListSuccess(state, payload) {
       return {
         ...state,
-        orderBy: payload.orderBy,
         list: payload.list,
+        orderBy: payload.sortOrder,
         pagination: {
           ...state.pagination,
           total: payload.total,
-          pageSize: payload.pageSize,
-          current: payload.pageNum,
         },
       }
     },
@@ -45,14 +45,15 @@ const merchant = {
         keywords: payload,
       }
     },
-    changeTable(state, pagination) {
+    changeTable(state, payload) {
       return {
         ...state,
+        orderBy: payload.sorter.order,
+        total: payload.pagination.total,
         pagination: {
           ...state.pagination,
-          current: pagination.current,
-          pageSize: pagination.pageSize,
-          total: pagination.total,
+          current: payload.pagination.current,
+          pageSize: payload.pagination.pageSize,
         },
       }
     },
@@ -80,6 +81,18 @@ const merchant = {
       return {
         ...state,
         list: newList,
+      }
+    },
+    getMerchantDetailSuccess(state, payload) {
+      return {
+        ...state,
+        current: payload,
+      }
+    },
+    getMerchantDetailFailure(state) {
+      return {
+        ...state,
+        current: {},
       }
     },
     resetState() {
@@ -111,16 +124,26 @@ const merchant = {
     },
     async addMerchant(payload) {
       try {
-        console.log(payload)
+        const { data } = await requestAddMerchant(payload)
+
+        console.log(data)
+
+        message.success('新增成功！')
       } catch (err) {
-        console.log(err)
+        errorHandler(err)
       }
     },
     async modifyMerchant() {
       console.log(111)
     },
-    async deleteMerchant() {
-      console.log(22)
+    async deleteMerchant(id) {
+      try {
+        await requestDeleteMerchant(id)
+
+        message.success('删除成功！')
+      } catch (error) {
+        errorHandler(error)
+      }
     },
     async switchStatus(payload, rootState) {
       await asyncDelay(3000)
@@ -132,6 +155,18 @@ const merchant = {
       }
 
       this.updateStatus(result)
+    },
+    async getMerchantDetail(id) {
+      try {
+        const { data } = await requestGetMerchantDetail(id)
+
+        this.getMerchantDetailSuccess(data)
+
+        console.log(data)
+      } catch (err) {
+        errorHandler(err)
+        this.getMerchantDetailFailure()
+      }
     },
   }),
 }

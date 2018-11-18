@@ -35,7 +35,7 @@ const menuData = [
       {
         name: '编辑商户',
         path: 'edit',
-        authority: 'user',
+        hideInMenu: true,
       },
     ],
   },

@@ -27,7 +27,7 @@ const routerConfig = {
   '/merchant/add': {
     component: dynamicWrapper(() => import('-/pages/merchant/add')),
   },
-  '/merchant/edit': {
+  '/merchant/edit/:id': {
     component: dynamicWrapper(() => import('-/pages/merchant/edit')),
   },
   '/exception/403': {

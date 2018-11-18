@@ -1,12 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import {
-  Card, Input, Table, Switch,
+  Card, Input, Table, Switch, Modal,
 } from 'antd'
-import styles from './style.module.less'
+import history from '-/utils/history'
+
+import styles from './List.module.less'
 
 const { Search } = Input
+const { confirm } = Modal
 
 const mapState = state => ({
   ...state.merchant,
@@ -15,7 +19,7 @@ const mapState = state => ({
 
 const mapDispatch = dispatch => dispatch.merchant
 
-class MerchantList extends React.Component {
+class MerchantList extends React.PureComponent {
   static propTypes = {
     switching: PropTypes.bool,
     keywords: PropTypes.string,
@@ -25,6 +29,9 @@ class MerchantList extends React.Component {
     changeKeywords: PropTypes.func.isRequired,
     changeTable: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
+    resetState: PropTypes.func.isRequired,
+    deleteMerchant: PropTypes.func.isRequired,
+    orderBy: PropTypes.oneOf(['ascend', 'descend']),
     // changeSortOrder: PropTypes.func.isRequired,
   }
 
@@ -33,48 +40,8 @@ class MerchantList extends React.Component {
     list: [],
     keywords: '',
     pagination: {},
+    orderBy: 'descend',
   }
-
-  columns = [{
-    dataIndex: 'name',
-    title: '品牌名称',
-  }, {
-    dataIndex: 'admin.name',
-    title: '负责人',
-    render: (text, record) => `${text} ${record.admin.tel}`,
-  }, {
-    dataIndex: 'roles',
-    title: '权限分配',
-  }, {
-    dataIndex: 'createDate',
-    title: '创建时间',
-  }, {
-    dataIndex: 'status',
-    title: '是否启用',
-    render: (text, record) => {
-      const { switching } = this.props
-      const { currentSwitchId } = this.state
-
-      return (
-        <Switch
-          onChange={checked => this.handleSwitchStatus(checked, record.id)}
-          checkedChildren="是"
-          unCheckedChildren="否"
-          checked={text === '1'}
-          loading={switching && currentSwitchId === record.id}
-        />
-      )
-    },
-  }, {
-    dataIndex: 'action',
-    title: '操作',
-    render: () => (
-      <div>
-        <button type="button" className="btn-link">修改</button>
-        <button type="button" className="btn-link">删除</button>
-      </div>
-    ),
-  }]
 
   constructor(props) {
     super(props)
@@ -112,6 +79,11 @@ class MerchantList extends React.Component {
     }
   }
 
+  componentWillUnmount() {
+    const { resetState } = this.props
+    resetState()
+  }
+
   handleSwitchStatus = (checked, id) => {
     const { switchStatus } = this.props
     switchStatus({
@@ -128,18 +100,82 @@ class MerchantList extends React.Component {
     changeKeywords(value)
   }
 
-  // handleShowSizeChange = (current, size) => {
-  //   const { changePagination } = this.props
-  //   changePagination({ current, pageSize: size })
-  // }
+  handleTableChange = (pagination, filters, sorter) => {
+    const { changeTable } = this.props
+    changeTable({ pagination, filters, sorter })
+  }
 
-  // handlePageChange = (pagination, size) => {
-  //   const { changePagination } = this.props
-  //   changePagination({ current, pageSize: size })
-  // }
+  showDeleteConfirm = (merchant) => {
+    const { deleteMerchant } = this.props
+
+    confirm({
+      title: `你确认要删除 ${merchant.name} 吗？`,
+      onOk() {
+        deleteMerchant(merchant.id)
+      },
+      okType: 'danger',
+    })
+  }
 
   render() {
-    const { list, pagination, changeTable } = this.props
+    const { list, pagination, orderBy } = this.props
+    const columns = [{
+      dataIndex: 'name',
+      title: '品牌名称',
+    }, {
+      dataIndex: 'admin.name',
+      title: '负责人',
+      render: (text, record) => `${text} ${record.admin.tel}`,
+    }, {
+      dataIndex: 'roles',
+      title: '权限分配',
+    }, {
+      dataIndex: 'createDate',
+      title: '创建时间',
+      render: text => moment(text).format('YYYY-MM-DD'),
+      sortOrder: orderBy,
+      sorter: (a, b) => a.createDate - b.createDate,
+    }, {
+      dataIndex: 'status',
+      title: '是否启用',
+      render: (text, record) => {
+        const { switching } = this.props
+        const { currentSwitchId } = this.state
+
+        return (
+          <Switch
+            onChange={checked => this.handleSwitchStatus(checked, record.id)}
+            checkedChildren="是"
+            unCheckedChildren="否"
+            checked={text === '1'}
+            loading={switching && currentSwitchId === record.id}
+          />
+        )
+      },
+    }, {
+      dataIndex: 'id',
+      title: '操作',
+      render: (id, record) => (
+        <div>
+          <button
+            type="button"
+            className="btn-link"
+            onClick={() => history.push(`/merchant/edit/${id}`, {
+              merchant: record,
+            })}
+          >
+              修改
+          </button>
+          <button
+            type="button"
+            className="btn-link"
+            onClick={() => this.showDeleteConfirm(record)}
+          >
+              删除
+          </button>
+        </div>
+      ),
+    }]
     const finalPagination = Object.assign({}, {
       showQuickJumper: true,
       showSizeChanger: true,
@@ -156,9 +192,9 @@ class MerchantList extends React.Component {
           />
         </div>
         <Table
-          columns={this.columns}
+          columns={columns}
           dataSource={list}
-          onChange={changeTable}
+          onChange={this.handleTableChange}
           rowKey={record => record.id}
           pagination={finalPagination}
         />

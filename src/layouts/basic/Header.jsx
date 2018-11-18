@@ -28,7 +28,7 @@ const ContentHeader = (props) => {
       <div className={styles['action-bar']}>
         <Account
           className={styles.action}
-          name={currentUser.realname}
+          name={currentUser.username}
           avatar={currentUser.avatar}
           onLogout={onLogout}
         />

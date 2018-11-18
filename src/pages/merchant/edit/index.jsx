@@ -43,6 +43,7 @@ const mapDispatch = dispatch => dispatch.merchant
 class MerchantEdit extends React.PureComponent {
   static propTypes = {
     form: PropTypes.shape({}).isRequired,
+    current: PropTypes.shape({}).isRequired,
   }
 
   constructor(props) {
@@ -51,6 +52,12 @@ class MerchantEdit extends React.PureComponent {
       loading: false,
       imageUrl: '',
     }
+  }
+
+  componentDidMount() {
+    const { match, getMerchantDetail } = this.props
+
+    getMerchantDetail(match.params.id)
   }
 
   handleClick = () => {
@@ -124,7 +131,7 @@ class MerchantEdit extends React.PureComponent {
 
   render() {
     const { loading, imageUrl } = this.state
-    const { form } = this.props
+    const { form, current } = this.props
     const { getFieldDecorator } = form
     const formItemLayout = {
       labelCol: {
@@ -153,6 +160,7 @@ class MerchantEdit extends React.PureComponent {
                   style={{ width: '100%' }}
                 >
                   {getFieldDecorator('name', {
+                    initialValue: current.name,
                     rules: [{
                       required: true,
                       message: '请输入品牌名称！',
@@ -170,6 +178,7 @@ class MerchantEdit extends React.PureComponent {
                   style={{ width: '100%' }}
                 >
                   {getFieldDecorator('tel', {
+                    initialValue: current.tel,
                     rules: [{
                       validator: this.validatePhone,
                     }],
@@ -185,6 +194,7 @@ class MerchantEdit extends React.PureComponent {
                   style={{ width: '50%' }}
                 >
                   {getFieldDecorator('region', {
+                    initialValue: [current.provinceId, current.cityId, current.areaId],
                     rules: [],
                   })(<RegionPicker />)}
                 </FormItem>
@@ -226,6 +236,7 @@ class MerchantEdit extends React.PureComponent {
               <Col span={12}>
                 <FormItem label="登录账号">
                   {getFieldDecorator('adminAccount', {
+                    initialValue: current.admin && current.admin.account,
                     rules: [],
                   })(<Input />)}
                 </FormItem>
@@ -233,6 +244,7 @@ class MerchantEdit extends React.PureComponent {
               <Col span={12}>
                 <FormItem label="主负责人">
                   {getFieldDecorator('adminName', {
+                    initialValue: current.admin && current.admin.name,
                     rules: [],
                   })(<Input placeholder="请输入真实姓名" />)}
                 </FormItem>
@@ -242,7 +254,7 @@ class MerchantEdit extends React.PureComponent {
               <Col span={12}>
                 <FormItem label="初始密码">
                   {getFieldDecorator('adminPassword', {
-                    initialValue: '88888888',
+                    initialValue: current.admin && current.admin.password,
                     rules: [],
                   })(<Input />)}
                 </FormItem>
@@ -250,6 +262,7 @@ class MerchantEdit extends React.PureComponent {
               <Col span={12}>
                 <FormItem label="联系电话">
                   {getFieldDecorator('adminTel', {
+                    initialValue: current.admin && current.admin.tel,
                     rules: [],
                   })(<Input placeholder="必须输入手机号" />)}
                 </FormItem>

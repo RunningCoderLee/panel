@@ -1,12 +1,13 @@
 import {
   requestGetMerchantList, requestAddMerchant,
+  requestDeleteMerchant, requestGetMerchantDetail,
 } from '-/services/merchant'
 import { message } from 'antd'
 import { errorHandler } from '-/services'
 
 const initState = {
   list: [],
-  current: null,
+  current: {},
   keywords: '',
   orderBy: 'descend',
   pagination: {
@@ -82,6 +83,18 @@ const merchant = {
         list: newList,
       }
     },
+    getMerchantDetailSuccess(state, payload) {
+      return {
+        ...state,
+        current: payload,
+      }
+    },
+    getMerchantDetailFailure(state) {
+      return {
+        ...state,
+        current: {},
+      }
+    },
     resetState() {
       return initState
     },
@@ -123,8 +136,14 @@ const merchant = {
     async modifyMerchant() {
       console.log(111)
     },
-    async deleteMerchant() {
-      console.log(22)
+    async deleteMerchant(id) {
+      try {
+        await requestDeleteMerchant(id)
+
+        message.success('删除成功！')
+      } catch (error) {
+        errorHandler(error)
+      }
     },
     async switchStatus(payload, rootState) {
       await asyncDelay(3000)
@@ -136,6 +155,18 @@ const merchant = {
       }
 
       this.updateStatus(result)
+    },
+    async getMerchantDetail(id) {
+      try {
+        const { data } = await requestGetMerchantDetail(id)
+
+        this.getMerchantDetailSuccess(data)
+
+        console.log(data)
+      } catch (err) {
+        errorHandler(err)
+        this.getMerchantDetailFailure()
+      }
     },
   }),
 }

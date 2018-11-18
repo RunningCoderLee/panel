@@ -129,7 +129,7 @@ class SiderMenu extends React.PureComponent {
     }
 
     return data
-      .filter(item => item.name)
+      .filter(item => item.name && !item.hideInMenu)
       .map((item) => {
         const itemDom = this.renderSubMenuOrMenuItem(item)
         return check(item.authority, itemDom, null)

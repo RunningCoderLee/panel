@@ -3,11 +3,14 @@ import { connect } from 'react-redux'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import {
-  Card, Input, Table, Switch,
+  Card, Input, Table, Switch, Modal,
 } from 'antd'
+import history from '-/utils/history'
+
 import styles from './List.module.less'
 
 const { Search } = Input
+const { confirm } = Modal
 
 const mapState = state => ({
   ...state.merchant,
@@ -27,6 +30,7 @@ class MerchantList extends React.PureComponent {
     changeTable: PropTypes.func.isRequired,
     switchStatus: PropTypes.func.isRequired,
     resetState: PropTypes.func.isRequired,
+    deleteMerchant: PropTypes.func.isRequired,
     orderBy: PropTypes.oneOf(['ascend', 'descend']),
     // changeSortOrder: PropTypes.func.isRequired,
   }
@@ -101,6 +105,18 @@ class MerchantList extends React.PureComponent {
     changeTable({ pagination, filters, sorter })
   }
 
+  showDeleteConfirm = (merchant) => {
+    const { deleteMerchant } = this.props
+
+    confirm({
+      title: `你确认要删除 ${merchant.name} 吗？`,
+      onOk() {
+        deleteMerchant(merchant.id)
+      },
+      okType: 'danger',
+    })
+  }
+
   render() {
     const { list, pagination, orderBy } = this.props
     const columns = [{
@@ -137,12 +153,26 @@ class MerchantList extends React.PureComponent {
         )
       },
     }, {
-      dataIndex: 'action',
+      dataIndex: 'id',
       title: '操作',
-      render: () => (
+      render: (id, record) => (
         <div>
-          <button type="button" className="btn-link">修改</button>
-          <button type="button" className="btn-link">删除</button>
+          <button
+            type="button"
+            className="btn-link"
+            onClick={() => history.push(`/merchant/edit/${id}`, {
+              merchant: record,
+            })}
+          >
+              修改
+          </button>
+          <button
+            type="button"
+            className="btn-link"
+            onClick={() => this.showDeleteConfirm(record)}
+          >
+              删除
+          </button>
         </div>
       ),
     }]

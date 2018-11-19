@@ -18,8 +18,8 @@ const shop = {
     getListSuccess(state, payload) {
       return {
         ...state,
-        list: payload.list,
-        total: payload.total,
+        list: payload.list || [],
+        total: payload.total || null,
       }
     },
     getListFailure(state) {
@@ -59,17 +59,13 @@ const shop = {
   effects: () => ({
     async getList(payload, rootState) {
       const state = rootState.shop
-      let params = {
+      const params = {
         query: state.keywords,
         id: 'd278d586-ab51-49b3-858e-e95c71de276c',
       }
-
-      if (payload !== undefined) {
-        params = Object.assign({}, params, payload)
-      }
       try {
         const { data } = await requestGetShopList(params)
-        this.getListSuccess(data)
+        this.getListSuccess(data || {})
       } catch (err) {
         errorHandler(err)
         this.getListFailure()
@@ -125,7 +121,7 @@ const shop = {
 
       return Promise.resolve(mockData)
     },
-    async putShop(payload) {
+    async putEditShop(payload) {
       try {
         await requestPostShop(payload)
       } catch (error) {

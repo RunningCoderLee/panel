@@ -1,3 +1,5 @@
+import { Roles } from '-/utils/constants'
+
 const menuData = [
   // {
   //   name: 'dashboard',
@@ -23,6 +25,7 @@ const menuData = [
     name: '商户管理',
     icon: 'shop',
     path: 'merchant',
+    authority: Roles.BRAND_ADMIN,
     children: [
       {
         name: '商户列表',
@@ -43,6 +46,7 @@ const menuData = [
     name: '门店管理',
     icon: 'form',
     path: 'shop',
+    authority: [Roles.STORE_MANAGER, Roles.ADMIN],
     children: [
       {
         name: '新增门店',

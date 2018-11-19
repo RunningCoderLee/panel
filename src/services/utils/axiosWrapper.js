@@ -24,7 +24,7 @@ class Wrapper {
         .then((res) => {
           const { data, status } = res
 
-          if (status > 300) {
+          if (!(status >= 200 && status < 300)) {
             return reject(new NetError(status))
           }
 

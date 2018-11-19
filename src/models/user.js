@@ -37,6 +37,9 @@ const user = {
         },
       }
     },
+    resetState() {
+      return initState
+    },
   },
   effects: dispatch => ({
     async getUserInfo() {
@@ -55,13 +58,16 @@ const user = {
 
         setToken(data.token)
 
-        setCurrentAuthority('admin')
+        setCurrentAuthority(data.userInfo.roleCode)
+
+        return Promise.resolve()
       } catch (err) {
         errorHandler(err, {
           business: (code, message) => {
             dispatch.user.loginFailure(message)
           },
         })
+        return Promise.reject()
       }
     },
     async logout() {

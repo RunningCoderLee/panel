@@ -17,6 +17,7 @@ const mapState = state => ({
 
 const mapDispatch = dispatch => ({
   login: dispatch.user.login,
+  resetState: dispatch.user.resetState,
 })
 
 class Login extends React.PureComponent {
@@ -26,12 +27,20 @@ class Login extends React.PureComponent {
     history: PropTypes.shape({}).isRequired,
     loading: PropTypes.bool,
     errorMessage: PropTypes.string,
+    resetState: PropTypes.func,
   }
 
   static defaultProps = {
     login: () => {},
+    resetState: () => {},
     loading: false,
     errorMessage: '',
+  }
+
+  componentWillUnmount() {
+    const { resetState } = this.props
+
+    resetState()
   }
 
   handleSubmit = (e) => {
@@ -50,7 +59,6 @@ class Login extends React.PureComponent {
             history.replace('/')
           }
         })
-        .catch(err => console.error(err))
     })
   }
 

@@ -121,7 +121,7 @@ const shop = {
 
       return Promise.resolve(mockData)
     },
-    async putEditShop(payload) {
+    async editShop(payload) {
       try {
         await requestPostShop(payload)
       } catch (error) {

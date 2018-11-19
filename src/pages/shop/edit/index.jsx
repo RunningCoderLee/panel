@@ -33,7 +33,7 @@ class Edit extends Component {
     storeTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     roleTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     payTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    putEditShop: PropTypes.func.isRequired,
+    editShop: PropTypes.func.isRequired,
     validateEmloyeeAccount: PropTypes.func.isRequired,
     getShop: PropTypes.func.isRequired,
   }
@@ -74,7 +74,6 @@ class Edit extends Component {
     ])
     getShop()
       .then((data) => {
-        console.log(data)
         const {
           name, tel, storeType, addr, employees, pays,
         } = data
@@ -212,7 +211,7 @@ class Edit extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, putEditShop } = this.props
+    const { form, editShop } = this.props
     const { validateFields } = form
     validateFields((err, values) => {
       if (!err) {
@@ -226,7 +225,7 @@ class Edit extends Component {
           employees: employeeList,
           pays: payWayList,
         }
-        putEditShop(params)
+        editShop(params)
           .then(() => message.success('修改成功'))
       }
     })

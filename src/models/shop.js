@@ -64,8 +64,8 @@ const shop = {
         id: 'd278d586-ab51-49b3-858e-e95c71de276c',
       }
       try {
-        const { data } = await requestGetShopList(params)
-        this.getListSuccess(data || {})
+        const { data = {} } = await requestGetShopList(params)
+        this.getListSuccess(data)
       } catch (err) {
         errorHandler(err)
         this.getListFailure()

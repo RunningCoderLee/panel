@@ -60,10 +60,6 @@ class MerchantEdit extends React.PureComponent {
     getMerchantDetail(match.params.id)
   }
 
-  handleClick = () => {
-    console.log(1111)
-  }
-
   handleSubmit = (e) => {
     const { form: { validateFields } } = this.props
     let params = {}

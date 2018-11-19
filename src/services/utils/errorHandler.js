@@ -23,5 +23,5 @@ export default function errorHandler(error, config) {
     handler = config[type]
   }
 
-  handler()
+  handler(error.code, error.message)
 }

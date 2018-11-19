@@ -1,5 +1,6 @@
 import axios from 'axios'
 import AxiosWrapper from './utils/axiosWrapper'
+import { getToken } from '-/utils/authority'
 
 export { default as errorHandler } from './utils/errorHandler'
 
@@ -14,7 +15,17 @@ const service = axios.create({
 })
 
 // Add a request interceptor
-service.interceptors.request.use(config => config, error => Promise.reject(error))
+service.interceptors.request.use(
+  (config) => {
+    if (config.url === '/login' && config.method === 'post') {
+      return config
+    }
+
+    return { ...config, headers: { token: getToken() } }
+  },
+  // config => config,
+  error => Promise.reject(error),
+)
 
 // Add a response interceptor
 service.interceptors.response.use(response => response, error => Promise.reject(error))

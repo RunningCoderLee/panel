@@ -112,9 +112,14 @@ class BasicLayout extends React.PureComponent {
       currentUser, logout, match, routerData,
     } = this.props
 
-    const baseRedirect = this.getBaseRedirect()
 
     const mainStyle = { paddingLeft: collapsed ? 80 : 256 }
+
+    if (Object.keys(currentUser).length === 0) {
+      return null
+    }
+    // NOTE: 不能放在上面的判断语句之前
+    const baseRedirect = this.getBaseRedirect()
 
     return (
       <Layout className={styles.container}>

@@ -1,6 +1,6 @@
 import { setCurrentAuthority } from '-/components/Authorization'
 import {
-  requestLogin, requestGetUserInfo, requestLogout,
+  requestLogin, requestGetUserInfo,
 } from '-/services/user'
 import { errorHandler } from '-/services'
 import history from '-/utils/history'
@@ -16,9 +16,12 @@ const initState = {
 const user = {
   state: initState,
   reducers: {
-    loginSuccess(state) {
+    loginSuccess(state, userInfo) {
       return {
         ...state,
+        currentUser: {
+          ...userInfo,
+        },
         isLoginFailed: false,
       }
     },
@@ -29,6 +32,9 @@ const user = {
         errorMessage: payload,
       }
     },
+    logoutSuccess() {
+      return { ...initState }
+    },
     updateCurrentUser(state, payload) {
       return {
         ...state,
@@ -37,14 +43,21 @@ const user = {
         },
       }
     },
-    resetState() {
-      return initState
+    resetState(state) {
+      return {
+        ...initState,
+        currentUser: {
+          ...state.currentUser,
+        },
+      }
     },
   },
   effects: dispatch => ({
     async getUserInfo() {
       try {
         const { data } = await requestGetUserInfo()
+
+        setCurrentAuthority(data.roleCode)
 
         dispatch.user.updateCurrentUser(data)
       } catch (err) {
@@ -54,11 +67,13 @@ const user = {
     async login(payload) {
       try {
         const { data } = await requestLogin(payload)
+        const { token, ...userInfo } = data
 
+        setToken(token)
 
-        setToken(data.token)
+        setCurrentAuthority(userInfo.roleCode)
 
-        setCurrentAuthority(data.roleCode)
+        this.loginSuccess(userInfo)
 
         return Promise.resolve()
       } catch (err) {
@@ -72,7 +87,9 @@ const user = {
     },
     async logout() {
       try {
-        await requestLogout()
+        this.logoutSuccess()
+
+        setCurrentAuthority('guest')
 
         history.push('/user/login')
 

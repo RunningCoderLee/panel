@@ -17,6 +17,7 @@ const dynamicWrapper = component => Loadable({
   loading: () => <Spin size="large" className="global-spin" />, // eslint-disable-line
 })
 
+// NOTE: 新增路由不要放在 /user 的下方
 const routerConfig = {
   '/': {
     component: dynamicWrapper(() => import('-/layouts/basic/BasicLayout')),
@@ -29,6 +30,15 @@ const routerConfig = {
   },
   '/merchant/edit/:id': {
     component: dynamicWrapper(() => import('-/pages/merchant/edit')),
+  },
+  '/shop/list': {
+    component: dynamicWrapper(() => import('-/pages/shop/list')),
+  },
+  '/shop/add': {
+    component: dynamicWrapper(() => import('-/pages/shop/add')),
+  },
+  '/shop/edit': {
+    component: dynamicWrapper(() => import('-/pages/shop/edit')),
   },
   '/exception/403': {
     component: dynamicWrapper(() => import('-/pages/exception/403')),
@@ -44,15 +54,6 @@ const routerConfig = {
   },
   '/user/login': {
     component: dynamicWrapper(() => import('-/pages/login/Login')),
-  },
-  '/shop/list': {
-    component: dynamicWrapper(() => import('-/pages/shop/list')),
-  },
-  '/shop/add': {
-    component: dynamicWrapper(() => import('-/pages/shop/add')),
-  },
-  '/shop/edit': {
-    component: dynamicWrapper(() => import('-/pages/shop/edit')),
   },
 }
 

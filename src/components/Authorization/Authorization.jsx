@@ -1,6 +1,7 @@
 import * as React from 'react'
 import PropTypes from 'prop-types'
 import CheckPermissions from './CheckPermissions'
+import { Roles } from '-/utils/constants'
 
 class Authorization extends React.PureComponent {
   static propTypes = {
@@ -8,7 +9,7 @@ class Authorization extends React.PureComponent {
     authority: PropTypes.oneOfType([
       PropTypes.string,
       PropTypes.func,
-      PropTypes.arrayOf(PropTypes.oneOf(['admin', 'user'])),
+      PropTypes.arrayOf(PropTypes.oneOf(Object.values(Roles))),
     ]),
     noMatch: PropTypes.node,
   }

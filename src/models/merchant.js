@@ -124,18 +124,16 @@ const merchant = {
     },
     async addMerchant(payload) {
       try {
-        const { data } = await requestAddMerchant(payload)
+        await requestAddMerchant(payload)
 
-        console.log(data)
 
         message.success('新增成功！')
       } catch (err) {
         errorHandler(err)
       }
     },
-    async modifyMerchant() {
-      console.log(111)
-    },
+    // async modifyMerchant() {
+    // },
     async deleteMerchant(id) {
       try {
         await requestDeleteMerchant(id)
@@ -161,8 +159,6 @@ const merchant = {
         const { data } = await requestGetMerchantDetail(id)
 
         this.getMerchantDetailSuccess(data)
-
-        console.log(data)
       } catch (err) {
         errorHandler(err)
         this.getMerchantDetailFailure()

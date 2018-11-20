@@ -23,9 +23,9 @@ const baseRules = {
 const prodRules = Object.assign({}, baseRules, {
   // disallow the use of console (no-console)
   // https://eslint.org/docs/rules/no-console#disallow-the-use-of-console-no-console
-  'no-console': ['error', {
-    allow: ['warn', 'error'],
-  }]
+  // 'no-console': ['error', {
+  //   allow: ['warn', 'error'],
+  // }]
 })
 
 module.exports = {

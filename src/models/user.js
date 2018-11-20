@@ -58,7 +58,7 @@ const user = {
 
         setToken(data.token)
 
-        setCurrentAuthority(data.userInfo.roleCode)
+        setCurrentAuthority(data.roleCode)
 
         return Promise.resolve()
       } catch (err) {

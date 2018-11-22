@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import { Table, Switch, message } from 'antd'
+import history from '-/utils/history'
 import ToolBar from './ToolBar'
 
 import * as styles from './list.module.less'
@@ -83,7 +84,8 @@ class List extends Component {
     dataIndex: 'operator',
     render: (text, record) => (
       <>
-        <span className={styles['edit-btn']}>修改</span>
+        {/* eslint-disable-next-line */}
+        <span className={styles['edit-btn']} onClick={this.handleEdit(record.id)}>修改</span>
         {/* eslint-disable-next-line */}
         <span className={styles['delete-btn']} onClick={this.handleDelete(record.id)}>删除</span>
       </>
@@ -123,6 +125,10 @@ class List extends Component {
     const { companyId = '' } = currentUser
 
     return companyId
+  }
+
+  handleEdit = storeId => () => {
+    history.push(`/shop/edit/${storeId}`)
   }
 
   handleChangeStatus = id => (checked) => {

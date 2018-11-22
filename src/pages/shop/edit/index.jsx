@@ -13,6 +13,7 @@ const FormItem = Form.Item
 
 const mapState = state => ({
   ...state.sysDictionary,
+  ...state.user,
 })
 
 const mapDispatch = dispatch => ({
@@ -35,7 +36,26 @@ class Edit extends Component {
     payTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     editShop: PropTypes.func.isRequired,
     validateEmloyeeAccount: PropTypes.func.isRequired,
-    getShop: PropTypes.func.isRequired,
+    getShopDetail: PropTypes.func.isRequired,
+    currentUser: PropTypes.shape({
+      companyId: PropTypes.string,
+    }),
+    match: PropTypes.shape({
+      params: PropTypes.shape({
+        id: PropTypes.string,
+      }),
+    }),
+  }
+
+  static defaultProps = {
+    currentUser: {
+      companyId: '',
+    },
+    match: {
+      params: {
+        id: '',
+      },
+    },
   }
 
   constructor(props) {
@@ -66,13 +86,18 @@ class Edit extends Component {
   }
 
   componentDidMount() {
-    const { getDictionaryList, getShop } = this.props
+    const { getDictionaryList, getShopDetail } = this.props
+
     Promise.all([
       getDictionaryList('STORE'),
       getDictionaryList('ROLE'),
       getDictionaryList('PAY'),
     ])
-    getShop()
+    const params = {
+      companyId: this.companyId,
+      storeId: this.storeId,
+    }
+    getShopDetail(params)
       .then((data) => {
         const {
           name, tel, storeType, addr, employees, pays,
@@ -86,6 +111,20 @@ class Edit extends Component {
           payWayList: pays,
         })
       })
+      .catch()
+  }
+
+  get companyId() {
+    const { currentUser = {} } = this.props
+    const { companyId = '' } = currentUser
+
+    return companyId
+  }
+
+  get storeId() {
+    const { match } = this.props
+
+    return match.params.id
   }
 
   handleAddPayWay = () => {
@@ -216,13 +255,18 @@ class Edit extends Component {
     validateFields((err, values) => {
       if (!err) {
         const { employeeList, payWayList } = this.state
+        const employees = employeeList.map(item => ({
+          ...item,
+          account: item.account.value,
+        }))
         const params = {
-          companyId: 'd278d586-ab51-49b3-858e-e95c71de276c',
+          companyId: this.companyId,
+          storeId: this.storeId,
           name: values.name,
           tel: values.tel,
           storeType: values.storeType,
           addr: values.addr,
-          employees: employeeList,
+          employees,
           pays: payWayList,
         }
         editShop(params)

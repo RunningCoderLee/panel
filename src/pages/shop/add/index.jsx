@@ -33,7 +33,7 @@ class Add extends Component {
     storeTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     roleTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     payTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    postShop: PropTypes.func.isRequired,
+    postCreateShop: PropTypes.func.isRequired,
     validateEmloyeeAccount: PropTypes.func.isRequired,
   }
 
@@ -190,7 +190,7 @@ class Add extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, postShop } = this.props
+    const { form, postCreateShop } = this.props
     const { validateFields } = form
     validateFields((err, values) => {
       if (!err) {
@@ -204,7 +204,7 @@ class Add extends Component {
           employees: employeeList,
           pays: payWayList,
         }
-        postShop(params)
+        postCreateShop(params)
           .then(() => message.success('新增成功'))
       }
     })

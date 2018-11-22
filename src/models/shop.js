@@ -1,6 +1,8 @@
 import {
   requestGetShopList,
-  requestPostShop,
+  requestPostCreateShop,
+  requestPostEditShop,
+  requestDeleteShop,
 } from '-/services/shop'
 import { errorHandler } from '-/services'
 
@@ -61,11 +63,11 @@ const shop = {
       const state = rootState.shop
       const params = {
         query: state.keywords,
-        id: 'd278d586-ab51-49b3-858e-e95c71de276c',
+        companyId: payload,
       }
       try {
-        const { data = {} } = await requestGetShopList(params)
-        this.getListSuccess(data)
+        const { data } = await requestGetShopList(params)
+        this.getListSuccess(data || {})
       } catch (err) {
         errorHandler(err)
         this.getListFailure()
@@ -81,17 +83,9 @@ const shop = {
       }
       this.updateStatus(result)
     },
-    async deleteShop(payload, rootState) {
-      const list = [...rootState.shop.list]
-      const targetIndex = list.findIndex(item => item.id === payload)
-      list.splice(targetIndex, 1)
-      const result = { list, total: list.length }
-
-      this.getListSuccess(result)
-    },
-    async postShop(payload) {
+    async postCreateShop(payload) {
       try {
-        await requestPostShop(payload)
+        await requestPostCreateShop(payload)
       } catch (error) {
         errorHandler(error)
       }
@@ -123,7 +117,14 @@ const shop = {
     },
     async editShop(payload) {
       try {
-        await requestPostShop(payload)
+        await requestPostEditShop(payload)
+      } catch (error) {
+        errorHandler(error)
+      }
+    },
+    async deleteShop(payload) {
+      try {
+        await requestDeleteShop(payload)
       } catch (error) {
         errorHandler(error)
       }

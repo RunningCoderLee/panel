@@ -8,7 +8,7 @@ export const requestGetShopList = payload => service.get(`/biz/company/${payload
 
 // 新增商户
 // http://yapi.int.medlinker.com/project/63/interface/api/52
-export const requestPostCreateShop = payload => service.post('biz/store', payload)
+export const requestPostCreateShop = payload => service.post(`/biz/company/${payload.companyId}/store`, payload)
 
 // 新增商户
 // http://yapi.int.medlinker.com/project/63/interface/api/52

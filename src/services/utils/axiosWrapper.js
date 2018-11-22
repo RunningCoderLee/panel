@@ -90,6 +90,17 @@ class Wrapper {
     )
   }
 
+  put(url, data, config) {
+    const cancelTokenSource = CancelToken.source()
+
+    return Wrapper.wrapRequest(
+      this.axiosInstance.put(url, data, Object.assign({}, config, {
+        cancelToken: cancelTokenSource.token,
+      })),
+      cancelTokenSource,
+    )
+  }
+
   patch(url, data, config) {
     const cancelTokenSource = CancelToken.source()
 

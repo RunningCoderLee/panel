@@ -22,3 +22,10 @@ export const requestGetMerchantList = payload => service.get('/biz/company', {
 // 查询商户详情
 // http://39.98.50.55:3000/project/12/interface/api/100
 export const requestGetMerchantDetail = id => service.get(`/biz/company/${id}`)
+
+// 启用/禁用商户
+// http://39.98.50.55:3000/project/12/interface/api/64
+export const requestToggleStatus = (id, status) => service.put('/biz/company/status', {
+  id,
+  status,
+})

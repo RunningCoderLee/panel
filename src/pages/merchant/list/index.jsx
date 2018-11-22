@@ -6,6 +6,7 @@ import {
   Card, Input, Table, Switch, Modal,
 } from 'antd'
 import history from '-/utils/history'
+import { RoleNameMap } from '-/utils/constants'
 
 import styles from './List.module.less'
 
@@ -14,7 +15,7 @@ const { confirm } = Modal
 
 const mapState = state => ({
   ...state.merchant,
-  switching: state.loading.effects.merchant.switchStatus,
+  switching: state.loading.effects.merchant.toggleStatus,
 })
 
 const mapDispatch = dispatch => dispatch.merchant
@@ -28,11 +29,10 @@ class MerchantList extends React.PureComponent {
     getList: PropTypes.func.isRequired,
     changeKeywords: PropTypes.func.isRequired,
     changeTable: PropTypes.func.isRequired,
-    switchStatus: PropTypes.func.isRequired,
+    toggleStatus: PropTypes.func.isRequired,
     resetState: PropTypes.func.isRequired,
     deleteMerchant: PropTypes.func.isRequired,
     orderBy: PropTypes.oneOf(['ascend', 'descend']),
-    // changeSortOrder: PropTypes.func.isRequired,
   }
 
   static defaultProps = {
@@ -85,8 +85,8 @@ class MerchantList extends React.PureComponent {
   }
 
   handleSwitchStatus = (checked, id) => {
-    const { switchStatus } = this.props
-    switchStatus({
+    const { toggleStatus } = this.props
+    toggleStatus({
       id,
       status: checked,
     })
@@ -129,6 +129,7 @@ class MerchantList extends React.PureComponent {
     }, {
       dataIndex: 'roles',
       title: '权限分配',
+      render: text => `${RoleNameMap[text]}`,
     }, {
       dataIndex: 'createDate',
       title: '创建时间',
@@ -166,6 +167,7 @@ class MerchantList extends React.PureComponent {
           >
               修改
           </button>
+          {'  '}
           <button
             type="button"
             className="btn-link"

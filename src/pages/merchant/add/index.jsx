@@ -123,6 +123,14 @@ class MerchantEdit extends React.PureComponent {
     }
   }
 
+  normFile = (e) => {
+    console.log('Upload event:', e)
+    if (Array.isArray(e)) {
+      return e
+    }
+    return e && e.fileList
+  }
+
   render() {
     const { loading, imageUrl } = this.state
     const { form } = this.props
@@ -207,17 +215,22 @@ class MerchantEdit extends React.PureComponent {
                   {...formItemLayout}
                   style={{ width: '100%' }}
                 >
-                  <Upload
-                    name="avatar"
-                    listType="picture-card"
-                    className="avatar-uploader"
-                    showUploadList={false}
-                    action="//jsonplaceholder.typicode.com/posts/"
-                    beforeUpload={beforeUpload}
-                    onChange={this.handleChange}
-                  >
-                    {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
-                  </Upload>
+                  {getFieldDecorator('dragger', {
+                    valuePropName: 'fileList',
+                    getValueFromEvent: this.normFile,
+                  })(
+                    <Upload
+                      name="file"
+                      listType="picture-card"
+                      className="avatar-uploader"
+                      showUploadList={false}
+                      action="http://39.98.50.55:3000/mock/12/sys/image/"
+                      beforeUpload={beforeUpload}
+                      onChange={this.handleChange}
+                    >
+                      {imageUrl ? <img src={imageUrl} alt="avatar" /> : uploadButton}
+                    </Upload>,
+                  )}
                 </FormItem>
               </Col>
             </Row>

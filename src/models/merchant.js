@@ -1,6 +1,7 @@
 import {
   requestGetMerchantList, requestAddMerchant,
   requestDeleteMerchant, requestGetMerchantDetail,
+  requestToggleStatus,
 } from '-/services/merchant'
 import { message } from 'antd'
 import { errorHandler } from '-/services'
@@ -16,8 +17,6 @@ const initState = {
     current: 1,
   },
 }
-
-const asyncDelay = ms => new Promise(r => setTimeout(r, ms))
 
 const merchant = {
   state: initState,
@@ -71,18 +70,6 @@ const merchant = {
         sortOrder: payload,
       }
     },
-    updateStatus(state, payload) {
-      const newList = [
-        ...state.list.slice(0, payload.id),
-        payload,
-        ...state.list.slice(Number(payload.id) + 1, state.list.length),
-      ]
-
-      return {
-        ...state,
-        list: newList,
-      }
-    },
     getMerchantDetailSuccess(state, payload) {
       return {
         ...state,
@@ -93,6 +80,12 @@ const merchant = {
       return {
         ...state,
         current: {},
+      }
+    },
+    toggleStatusSuccess(state, list) {
+      return {
+        ...state,
+        list,
       }
     },
     resetState() {
@@ -132,8 +125,6 @@ const merchant = {
         errorHandler(err)
       }
     },
-    // async modifyMerchant() {
-    // },
     async deleteMerchant(id) {
       try {
         await requestDeleteMerchant(id)
@@ -143,16 +134,24 @@ const merchant = {
         errorHandler(error)
       }
     },
-    async switchStatus(payload, rootState) {
-      await asyncDelay(3000)
-      const target = rootState.merchant.list.find(item => item.id === payload.id)
+    async toggleStatus(payload, rootState) {
+      const { id, status } = payload
 
-      const result = {
-        ...target,
-        status: payload.status ? '1' : '0',
+      try {
+        await requestToggleStatus(id, status)
+
+        const list = rootState.merchant.list.map((item) => {
+          if (item.id === id) {
+            return Object.assign({}, item, { status: status ? '1' : '0' })
+          }
+
+          return { ...item }
+        })
+
+        this.toggleStatusSuccess(list)
+      } catch (err) {
+        errorHandler(err)
       }
-
-      this.updateStatus(result)
     },
     async getMerchantDetail(id) {
       try {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Input } from 'antd'
+import history from '-/utils/history'
 
 import * as styles from './ToolBar.module.less'
 
@@ -46,6 +47,10 @@ class ToolBar extends Component {
     onSearch(value)
   }
 
+  handleGotoCreatePage = () => {
+    history.push('/shop/add')
+  }
+
   render() {
     const { total } = this.props
     const { value } = this.state
@@ -62,7 +67,7 @@ class ToolBar extends Component {
           <Button type="primary" onClick={this.handleSearch}>搜索</Button>
         </div>
         <div>
-          <Button type="primary">新增</Button>
+          <Button type="primary" onClick={this.handleGotoCreatePage}>新增</Button>
           <span className={styles.total}>
             门店数量：
             {total}

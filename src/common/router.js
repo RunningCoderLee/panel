@@ -37,7 +37,7 @@ const routerConfig = {
   '/shop/add': {
     component: dynamicWrapper(() => import('-/pages/shop/add')),
   },
-  '/shop/edit': {
+  '/shop/edit/:id': {
     component: dynamicWrapper(() => import('-/pages/shop/edit')),
   },
   '/exception/403': {

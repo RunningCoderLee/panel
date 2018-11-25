@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import history from '-/utils/history'
 import {
   Form, Input, Select, Radio, Button, Icon, message,
 } from 'antd'
@@ -13,6 +14,7 @@ const FormItem = Form.Item
 
 const mapState = state => ({
   ...state.sysDictionary,
+  ...state.user,
 })
 
 const mapDispatch = dispatch => ({
@@ -33,8 +35,17 @@ class Add extends Component {
     storeTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     roleTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
     payTypeList: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-    postShop: PropTypes.func.isRequired,
+    postCreateShop: PropTypes.func.isRequired,
     validateEmloyeeAccount: PropTypes.func.isRequired,
+    currentUser: PropTypes.shape({
+      companyId: PropTypes.string,
+    }),
+  }
+
+  static defaultProps = {
+    currentUser: {
+      companyId: '',
+    },
   }
 
   constructor(props) {
@@ -65,6 +76,13 @@ class Add extends Component {
       getDictionaryList('ROLE'),
       getDictionaryList('PAY'),
     ])
+  }
+
+  get companyId() {
+    const { currentUser = {} } = this.props
+    const { companyId = '' } = currentUser
+
+    return companyId
   }
 
   handleAddPayWay = () => {
@@ -190,22 +208,30 @@ class Add extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { form, postShop } = this.props
+    const { form, postCreateShop } = this.props
     const { validateFields } = form
     validateFields((err, values) => {
       if (!err) {
         const { employeeList, payWayList } = this.state
+        const employees = employeeList.map(item => ({
+          ...item,
+          account: item.account.value,
+        }))
         const params = {
-          companyId: 'd278d586-ab51-49b3-858e-e95c71de276c',
+          companyId: this.companyId,
           name: values.name,
           tel: values.tel,
           storeType: values.storeType,
           addr: values.addr,
-          employees: employeeList,
+          employees,
           pays: payWayList,
         }
-        postShop(params)
-          .then(() => message.success('新增成功'))
+        postCreateShop(params)
+          .then(() => {
+            message.success('新增成功')
+            history.push('/shop/list')
+          })
+          .catch(() => message.error('新增失败'))
       }
     })
   }
@@ -223,7 +249,11 @@ class Add extends Component {
           <div className={styles['store-form-row']}>
             <FormItem label="门店名称" className={styles['store-name']}>
               {getFieldDecorator('name', {
-                rules: [{ required: true, message: '请输入门店名称' }],
+                rules: [{
+                  required: true, message: '请输入门店名称',
+                }, {
+                  min: 2, max: 10, message: '只能为2-10个字符',
+                }],
               })(
                 <Input placeholder="请输入门店名称" />,
               )}
@@ -261,7 +291,7 @@ class Add extends Component {
               rules: [{
                 required: true, message: '请输入门店地址',
               }, {
-                max: 45, message: '最多为45个字符',
+                min: 2, max: 45, message: '只能为2-50个字符',
               }],
             })(
               <Input placeholder="请输入门店地址" />,

@@ -3,12 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import _ from 'lodash'
 import { Table, Switch, message } from 'antd'
+import history from '-/utils/history'
 import ToolBar from './ToolBar'
 
 import * as styles from './list.module.less'
 
 const mapState = state => ({
   ...state.shop,
+  ...state.user,
   switching: state.loading.effects.shop.switchStatus,
 })
 
@@ -25,11 +27,17 @@ class List extends Component {
     switching: PropTypes.bool,
     resetState: PropTypes.func.isRequired,
     deleteShop: PropTypes.func.isRequired,
+    currentUser: PropTypes.shape({
+      companyId: PropTypes.string,
+    }),
   }
 
   static defaultProps = {
     total: null,
     switching: false,
+    currentUser: {
+      companyId: '',
+    },
   }
 
   columns = [{
@@ -43,7 +51,7 @@ class List extends Component {
   }, {
     title: '店铺电话',
     dataIndex: 'tel',
-    width: 80,
+    width: 100,
   }, {
     title: '店长',
     dataIndex: 'manager',
@@ -76,7 +84,8 @@ class List extends Component {
     dataIndex: 'operator',
     render: (text, record) => (
       <>
-        <span className={styles['edit-btn']}>修改</span>
+        {/* eslint-disable-next-line */}
+        <span className={styles['edit-btn']} onClick={this.handleEdit(record.id)}>修改</span>
         {/* eslint-disable-next-line */}
         <span className={styles['delete-btn']} onClick={this.handleDelete(record.id)}>删除</span>
       </>
@@ -93,7 +102,7 @@ class List extends Component {
   componentDidMount() {
     const { getList } = this.props
 
-    getList()
+    getList(this.companyId)
   }
 
   componentDidUpdate(prevProps) {
@@ -101,7 +110,7 @@ class List extends Component {
     const { keywords, getList } = this.props
 
     if (prevKeywords !== keywords) {
-      getList()
+      getList(this.companyId)
     }
   }
 
@@ -109,6 +118,17 @@ class List extends Component {
     const { resetState } = this.props
 
     resetState()
+  }
+
+  get companyId() {
+    const { currentUser = {} } = this.props
+    const { companyId = '' } = currentUser
+
+    return companyId
+  }
+
+  handleEdit = storeId => () => {
+    history.push(`/shop/edit/${storeId}`)
   }
 
   handleChangeStatus = id => (checked) => {
@@ -127,11 +147,16 @@ class List extends Component {
     changeKeywords(keywords)
   }
 
-  handleDelete = id => () => {
-    const { deleteShop } = this.props
+  handleDelete = storeId => () => {
+    const { deleteShop, getList } = this.props
+    const params = { storeId, companyId: this.companyId }
 
-    deleteShop(id)
-      .then(() => message.success('删除成功'))
+    deleteShop(params)
+      .then(() => {
+        message.success('删除成功')
+        getList(this.companyId)
+      })
+      .catch(() => message.error('删除失败'))
   }
 
   renderEmployees = (value) => {

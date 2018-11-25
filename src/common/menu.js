@@ -51,10 +51,16 @@ const menuData = [
       {
         name: '新增门店',
         path: 'add',
+        hideInMenu: true,
       },
       {
         name: '门店查询',
         path: 'list',
+      },
+      {
+        name: '门店修改',
+        path: 'edit/:id',
+        hideInMenu: true,
       },
     ],
   },

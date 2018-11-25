@@ -1,6 +1,9 @@
 import {
   requestGetShopList,
-  requestPostShop,
+  requestCreateShop,
+  requestGetShopDetail,
+  requestEditShop,
+  requestDeleteShop,
 } from '-/services/shop'
 import { errorHandler } from '-/services'
 
@@ -61,11 +64,11 @@ const shop = {
       const state = rootState.shop
       const params = {
         query: state.keywords,
-        id: 'd278d586-ab51-49b3-858e-e95c71de276c',
+        companyId: payload,
       }
       try {
-        const { data = {} } = await requestGetShopList(params)
-        this.getListSuccess(data)
+        const { data } = await requestGetShopList(params)
+        this.getListSuccess(data || {})
       } catch (err) {
         errorHandler(err)
         this.getListFailure()
@@ -81,17 +84,9 @@ const shop = {
       }
       this.updateStatus(result)
     },
-    async deleteShop(payload, rootState) {
-      const list = [...rootState.shop.list]
-      const targetIndex = list.findIndex(item => item.id === payload)
-      list.splice(targetIndex, 1)
-      const result = { list, total: list.length }
-
-      this.getListSuccess(result)
-    },
-    async postShop(payload) {
+    async postCreateShop(payload) {
       try {
-        await requestPostShop(payload)
+        await requestCreateShop(payload)
       } catch (error) {
         errorHandler(error)
       }
@@ -100,30 +95,26 @@ const shop = {
       await asyncDelay(3000)
       return Promise.resolve(false)
     },
-    async getShop() {
-      const mockData = {
-        name: 'name',
-        tel: '12324',
-        storeType: 'mainStore',
-        addr: 'xxxxx',
-        employees: [{
-          account: '11',
-          password: '12324',
-          name: '张三',
-          sex: 1,
-          roleId: 'admin',
-        }],
-        pays: [{
-          payName: '网银支付',
-          payUrl: '',
-        }],
-      }
+    async getShopDetail(payload) {
+      try {
+        const { data } = await requestGetShopDetail(payload)
 
-      return Promise.resolve(mockData)
+        return Promise.resolve(data)
+      } catch (error) {
+        errorHandler(error)
+        return Promise.reject()
+      }
     },
     async editShop(payload) {
       try {
-        await requestPostShop(payload)
+        await requestEditShop(payload)
+      } catch (error) {
+        errorHandler(error)
+      }
+    },
+    async deleteShop(payload) {
+      try {
+        await requestDeleteShop(payload)
       } catch (error) {
         errorHandler(error)
       }

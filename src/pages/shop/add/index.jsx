@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import history from '-/utils/history'
 import {
   Form, Input, Select, Radio, Button, Icon, message,
 } from 'antd'
@@ -226,7 +227,11 @@ class Add extends Component {
           pays: payWayList,
         }
         postCreateShop(params)
-          .then(() => message.success('新增成功'))
+          .then(() => {
+            message.success('新增成功')
+            history.push('/shop/list')
+          })
+          .catch(() => message.error('新增失败'))
       }
     })
   }

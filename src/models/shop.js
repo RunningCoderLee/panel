@@ -1,8 +1,8 @@
 import {
   requestGetShopList,
-  requestPostCreateShop,
+  requestCreateShop,
   requestGetShopDetail,
-  requestPostEditShop,
+  requestEditShop,
   requestDeleteShop,
 } from '-/services/shop'
 import { errorHandler } from '-/services'
@@ -86,7 +86,7 @@ const shop = {
     },
     async postCreateShop(payload) {
       try {
-        await requestPostCreateShop(payload)
+        await requestCreateShop(payload)
       } catch (error) {
         errorHandler(error)
       }
@@ -107,7 +107,7 @@ const shop = {
     },
     async editShop(payload) {
       try {
-        await requestPostEditShop(payload)
+        await requestEditShop(payload)
       } catch (error) {
         errorHandler(error)
       }

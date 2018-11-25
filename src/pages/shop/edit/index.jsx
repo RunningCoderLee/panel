@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import history from '-/utils/history'
 import {
   Form, Input, Select, Radio, Button, Icon, message,
 } from 'antd'
@@ -270,7 +271,13 @@ class Edit extends Component {
           pays: payWayList,
         }
         editShop(params)
-          .then(() => message.success('修改成功'))
+          .then(() => {
+            message.success('修改成功')
+            history.push('/shop/list')
+          })
+          .catch(() => {
+            message.error('修改失败')
+          })
       }
     })
   }
